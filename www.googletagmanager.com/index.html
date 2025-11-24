@@ -1,0 +1,169 @@
+<!DOCTYPE html><html lang="en"><head>
+<script type="systemjs-importmap">
+{
+  "imports": {
+    "/shared/": "/static.7ejzzvoy4.com/shared/",
+    "./shared/": "/static.7ejzzvoy4.com/shared/",
+    "../shared/": "/static.7ejzzvoy4.com/shared/"
+  }
+}
+</script>
+<script>
+// Fix SystemJS module resolution for offline use
+(function() {
+  // Intercept System.import and System.resolve early
+  const originalImport = window.System ? window.System.import : null;
+  const originalResolve = window.System ? window.System.resolve : null;
+  
+  if (window.System) {
+    // Override import
+    window.System.import = function(id, parentUrl) {
+      if (typeof id === 'string') {
+        if (id.startsWith('/shared/') || id.startsWith('./shared/') || id.startsWith('../shared/')) {
+          id = id.replace(/^(\.\.?\/)?shared\//, '/static.7ejzzvoy4.com/shared/');
+        }
+        if (/^\/\d+\//.test(id)) {
+          id = '/static.7ejzzvoy4.com' + id;
+        }
+      }
+      return originalImport ? originalImport.call(this, id, parentUrl) : Promise.reject(new Error('System.import not available'));
+    };
+    
+    // Override resolve
+    window.System.resolve = function(id, parentUrl) {
+      if (typeof id === 'string') {
+        if (id.startsWith('/shared/') || id.startsWith('./shared/') || id.startsWith('../shared/')) {
+          id = id.replace(/^(\.\.?\/)?shared\//, '/static.7ejzzvoy4.com/shared/');
+        }
+        if (/^\/\d+\//.test(id)) {
+          id = '/static.7ejzzvoy4.com' + id;
+        }
+      }
+      return originalResolve ? originalResolve.call(this, id, parentUrl) : id;
+    };
+    
+    // Also patch the constructor prototype if it exists
+    if (window.System.constructor && window.System.constructor.prototype) {
+      const protoResolve = window.System.constructor.prototype.resolve;
+      if (protoResolve) {
+        window.System.constructor.prototype.resolve = function(id, parentUrl) {
+          if (typeof id === 'string') {
+            if (id.startsWith('/shared/') || id.startsWith('./shared/') || id.startsWith('../shared/')) {
+              id = id.replace(/^(\.\.?\/)?shared\//, '/static.7ejzzvoy4.com/shared/');
+            }
+            if (/^\/\d+\//.test(id)) {
+              id = '/static.7ejzzvoy4.com' + id;
+            }
+          }
+          return protoResolve.call(this, id, parentUrl);
+        };
+      }
+    }
+  }
+  
+  // Also intercept any import map lookups
+  Object.defineProperty(window, 'importShim', {
+    configurable: true,
+    writable: true,
+    value: function(id) {
+      if (typeof id === 'string') {
+        if (id.startsWith('/shared/') || id.startsWith('./shared/') || id.startsWith('../shared/')) {
+          id = id.replace(/^(\.\.?\/)?shared\//, '/static.7ejzzvoy4.com/shared/');
+        }
+        if (/^\/\d+\//.test(id)) {
+          id = '/static.7ejzzvoy4.com' + id;
+        }
+      }
+      return import(id);
+    }
+  });
+})();
+</script>
+<script>
+// Block Google Tag Manager and Analytics (not needed for offline game)
+(function() {
+  const blockedDomains = ['googletagmanager.com', 'google-analytics.com', 'analytics.google.com'];
+  
+  function shouldBlock(url) {
+    if (typeof url !== 'string') return false;
+    return blockedDomains.some(domain => url.includes(domain));
+  }
+  
+  const originalFetch = window.fetch;
+  window.fetch = function(url, ...args) {
+    if (shouldBlock(url)) {
+      return Promise.resolve(new Response('', { status: 200 }));
+    }
+    return originalFetch.call(this, url, ...args);
+  };
+  
+  const originalXHROpen = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function(method, url, ...args) {
+    if (shouldBlock(url)) {
+      this.send = () => {};
+      return;
+    }
+    return originalXHROpen.call(this, method, url, ...args);
+  };
+})();
+</script>
+<script>
+// Auto-generated path fix: redirect m.domain to static.domain for resources
+(function() {
+  function fixPath(url) {
+    if (typeof url !== 'string') return url;
+    
+    let fixed = url;
+    
+    // Handle full URLs (http://localhost:8080/m.domain/...)
+    if (fixed.includes('/m.7ejzzvoy4.com/')) {
+      fixed = fixed.replace('/m.7ejzzvoy4.com/', '/static.7ejzzvoy4.com/');
+      return fixed;
+    }
+    if (fixed.includes('/m.eajzzxhro.com/')) {
+      fixed = fixed.replace('/m.eajzzxhro.com/', '/static.eajzzxhro.com/');
+      return fixed;
+    }
+    
+    // Handle relative paths
+    // Fix 1: Replace /m.domain/ with /static.domain/
+    if (/\/m\.([^/]+)\//.test(fixed)) {
+      fixed = fixed.replace(/\/m\.([^/]+)\//, '/static.$1/');
+      return fixed;
+    }
+    
+    // Fix 2: Replace /shared/ with /static.7ejzzvoy4.com/shared/
+    if (fixed.startsWith('/shared/')) {
+      fixed = fixed.replace('/shared/', '/static.7ejzzvoy4.com/shared/');
+      return fixed;
+    }
+    
+    // Fix 3: Replace /[number]/ with /static.7ejzzvoy4.com/[number]/
+    if (/^\/\d+\//.test(fixed)) {
+      fixed = '/static.7ejzzvoy4.com' + fixed;
+      return fixed;
+    }
+    
+    return fixed;
+  }
+  
+  const originalFetch = window.fetch;
+  window.fetch = function(url, ...args) {
+    return originalFetch.call(this, fixPath(url), ...args);
+  };
+  
+  const originalXHROpen = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function(method, url, ...args) {
+    return originalXHROpen.call(this, method, fixPath(url), ...args);
+  };
+})();
+</script><meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  </head><body><a href="//www.google.com/"><span id="logo" aria-label="Google"></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  </p><p>The requested URL <code>/</code> was not found on this server.  <ins>That’s all we know.</ins>
+</p></body></html>
