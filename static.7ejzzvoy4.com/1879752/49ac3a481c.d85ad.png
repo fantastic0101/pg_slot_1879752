@@ -17,24 +17,23 @@
     let fixed = url;
     
     // Replace all original domains with the current domain
+    // IMPORTANT: Process subdomains FIRST, then bare domains
     for (const origDomain of originalDomains) {
-      // Handle m.originaldomain.com -> m.newdomain.com
-      if (fixed.includes('m.' + origDomain)) {
-        fixed = fixed.replace(new RegExp('m\\.' + origDomain.replace(/\./g, '\\.'), 'g'), 'm.' + currentDomain);
-      }
+      const escapedDomain = origDomain.replace(/\./g, '\\.');
       
-      // Handle static.originaldomain.com -> static.newdomain.com
-      if (fixed.includes('static.' + origDomain)) {
-        fixed = fixed.replace(new RegExp('static\\.' + origDomain.replace(/\./g, '\\.'), 'g'), 'static.' + currentDomain);
-      }
+      // Handle m.originaldomain.com -> m.newdomain.com
+      fixed = fixed.replace(new RegExp('m\\.' + escapedDomain, 'g'), 'm.' + currentDomain);
+      
+      // Handle static.originaldomain.com -> static.newdomain.com  
+      fixed = fixed.replace(new RegExp('static\\.' + escapedDomain, 'g'), 'static.' + currentDomain);
       
       // Handle api.originaldomain.com -> api.newdomain.com
-      if (fixed.includes('api.' + origDomain)) {
-        fixed = fixed.replace(new RegExp('api\\.' + origDomain.replace(/\./g, '\\.'), 'g'), 'api.' + currentDomain);
-      }
+      fixed = fixed.replace(new RegExp('api\\.' + escapedDomain, 'g'), 'api.' + currentDomain);
       
-      // Handle originaldomain.com -> newdomain.com (without subdomain)
-      fixed = fixed.replace(new RegExp('(?<!\\.)' + origDomain.replace(/\./g, '\\.'), 'g'), currentDomain);
+      // Handle bare originaldomain.com -> newdomain.com (only if NO subdomain before it)
+      // Use word boundary to avoid matching partial domains
+      fixed = fixed.replace(new RegExp('([^a-zA-Z0-9.-])' + escapedDomain, 'g'), '$1' + currentDomain);
+      fixed = fixed.replace(new RegExp('^' + escapedDomain, 'g'), currentDomain);
     }
     
     return fixed;
@@ -168,7 +167,7 @@
 
       <div class="cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300">
   <p class="text-13">
-    <span class="cf-footer-item sm:block sm:mb-1">Cloudflare Ray ID: <strong class="font-semibold">9a4a0b6bf98d52d6</strong></span>
+    <span class="cf-footer-item sm:block sm:mb-1">Cloudflare Ray ID: <strong class="font-semibold">9a4a83fef8c107b7</strong></span>
     <span class="cf-footer-separator sm:hidden">•</span>
     <span id="cf-footer-item-ip" class="cf-footer-item sm:block sm:mb-1">
       Your IP:
