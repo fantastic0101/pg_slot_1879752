@@ -1,6 +1,111 @@
 <!DOCTYPE html><html class="no-js" lang="en-US"><!--<![endif]--><head>
 <script>
-console.log('[MIRROR] Website cloned with portable path structure');
+// Domain replacement script - automatically adapts to your domain
+(function() {
+  // Get the current domain (e.g., wickedxo.com)
+  const currentDomain = window.location.hostname.replace(/^(m|static|api)./, '');
+  
+  // Original domains to replace
+  const originalDomains = ['7ejzzvoy4.com', 'eajzzxhro.com'];
+  
+  console.log('[MIRROR] Replacing original domains with:', currentDomain);
+  
+  // Function to replace domain in URL
+  function replaceDomain(url) {
+    if (typeof url !== 'string') return url;
+    
+    let fixed = url;
+    
+    // Replace all original domains with the current domain
+    for (const origDomain of originalDomains) {
+      // Handle m.originaldomain.com -> m.newdomain.com
+      if (fixed.includes('m.' + origDomain)) {
+        fixed = fixed.replace(new RegExp('m\\.' + origDomain.replace(/\./g, '\\.'), 'g'), 'm.' + currentDomain);
+      }
+      
+      // Handle static.originaldomain.com -> static.newdomain.com
+      if (fixed.includes('static.' + origDomain)) {
+        fixed = fixed.replace(new RegExp('static\\.' + origDomain.replace(/\./g, '\\.'), 'g'), 'static.' + currentDomain);
+      }
+      
+      // Handle api.originaldomain.com -> api.newdomain.com
+      if (fixed.includes('api.' + origDomain)) {
+        fixed = fixed.replace(new RegExp('api\\.' + origDomain.replace(/\./g, '\\.'), 'g'), 'api.' + currentDomain);
+      }
+      
+      // Handle originaldomain.com -> newdomain.com (without subdomain)
+      fixed = fixed.replace(new RegExp('(?<!\\.)' + origDomain.replace(/\./g, '\\.'), 'g'), currentDomain);
+    }
+    
+    return fixed;
+  }
+  
+  // Intercept fetch requests
+  const originalFetch = window.fetch;
+  window.fetch = function(url, ...args) {
+    const newUrl = replaceDomain(url);
+    if (newUrl !== url) {
+      console.log('[MIRROR-FETCH] Replaced:', url, '->', newUrl);
+    }
+    return originalFetch.call(this, newUrl, ...args);
+  };
+  
+  // Intercept XMLHttpRequest
+  const originalXHROpen = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function(method, url, ...args) {
+    const newUrl = replaceDomain(url);
+    if (newUrl !== url) {
+      console.log('[MIRROR-XHR] Replaced:', url, '->', newUrl);
+    }
+    return originalXHROpen.call(this, method, newUrl, ...args);
+  };
+  
+  // Intercept WebSocket connections
+  const originalWebSocket = window.WebSocket;
+  window.WebSocket = function(url, protocols) {
+    const newUrl = replaceDomain(url);
+    if (newUrl !== url) {
+      console.log('[MIRROR-WS] Replaced:', url, '->', newUrl);
+    }
+    return new originalWebSocket(newUrl, protocols);
+  };
+  
+  // Intercept dynamic script/link/image loading
+  const originalSetAttribute = Element.prototype.setAttribute;
+  Element.prototype.setAttribute = function(name, value) {
+    if (['src', 'href', 'data-src', 'data-href'].includes(name)) {
+      value = replaceDomain(value);
+    }
+    return originalSetAttribute.call(this, name, value);
+  };
+  
+  // Intercept dynamic element creation
+  const originalCreateElement = document.createElement;
+  document.createElement = function(tagName) {
+    const element = originalCreateElement.call(document, tagName);
+    
+    if (['script', 'link', 'img', 'iframe'].includes(tagName.toLowerCase())) {
+      const originalSrcSetter = Object.getOwnPropertyDescriptor(
+        Object.getPrototypeOf(element), 
+        tagName.toLowerCase() === 'link' ? 'href' : 'src'
+      )?.set;
+      
+      if (originalSrcSetter) {
+        const propName = tagName.toLowerCase() === 'link' ? 'href' : 'src';
+        Object.defineProperty(element, propName, {
+          set: function(value) {
+            originalSrcSetter.call(this, replaceDomain(value));
+          },
+          get: function() {
+            return this.getAttribute(propName);
+          }
+        });
+      }
+    }
+    
+    return element;
+  };
+})();
 </script>
 <title>Attention Required! | Cloudflare</title>
 <meta charset="UTF-8">
@@ -63,7 +168,7 @@ console.log('[MIRROR] Website cloned with portable path structure');
 
       <div class="cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300">
   <p class="text-13">
-    <span class="cf-footer-item sm:block sm:mb-1">Cloudflare Ray ID: <strong class="font-semibold">9a47d5fe4a4c9c7f</strong></span>
+    <span class="cf-footer-item sm:block sm:mb-1">Cloudflare Ray ID: <strong class="font-semibold">9a481b6c5c7ee621</strong></span>
     <span class="cf-footer-separator sm:hidden">•</span>
     <span id="cf-footer-item-ip" class="cf-footer-item sm:block sm:mb-1">
       Your IP:
