@@ -80,34 +80,6 @@
 })();
 </script>
 <script>
-// Block Google Tag Manager and Analytics (not needed for offline game)
-(function() {
-  const blockedDomains = ['googletagmanager.com', 'google-analytics.com', 'analytics.google.com'];
-  
-  function shouldBlock(url) {
-    if (typeof url !== 'string') return false;
-    return blockedDomains.some(domain => url.includes(domain));
-  }
-  
-  const originalFetch = window.fetch;
-  window.fetch = function(url, ...args) {
-    if (shouldBlock(url)) {
-      return Promise.resolve(new Response('', { status: 200 }));
-    }
-    return originalFetch.call(this, url, ...args);
-  };
-  
-  const originalXHROpen = XMLHttpRequest.prototype.open;
-  XMLHttpRequest.prototype.open = function(method, url, ...args) {
-    if (shouldBlock(url)) {
-      this.send = () => {};
-      return;
-    }
-    return originalXHROpen.call(this, method, url, ...args);
-  };
-})();
-</script>
-<script>
 // Auto-generated path fix: redirect m.domain to static.domain for resources
 (function() {
   function fixPath(url) {
@@ -219,7 +191,7 @@
 
       <div class="cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300">
   <p class="text-13">
-    <span class="cf-footer-item sm:block sm:mb-1">Cloudflare Ray ID: <strong class="font-semibold">9a3766316fd0c97b</strong></span>
+    <span class="cf-footer-item sm:block sm:mb-1">Cloudflare Ray ID: <strong class="font-semibold">9a47498df9fe0cef</strong></span>
     <span class="cf-footer-separator sm:hidden">•</span>
     <span id="cf-footer-item-ip" class="cf-footer-item sm:block sm:mb-1">
       Your IP:

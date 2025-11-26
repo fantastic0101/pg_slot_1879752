@@ -80,34 +80,6 @@
 })();
 </script>
 <script>
-// Block Google Tag Manager and Analytics (not needed for offline game)
-(function() {
-  const blockedDomains = ['googletagmanager.com', 'google-analytics.com', 'analytics.google.com'];
-  
-  function shouldBlock(url) {
-    if (typeof url !== 'string') return false;
-    return blockedDomains.some(domain => url.includes(domain));
-  }
-  
-  const originalFetch = window.fetch;
-  window.fetch = function(url, ...args) {
-    if (shouldBlock(url)) {
-      return Promise.resolve(new Response('', { status: 200 }));
-    }
-    return originalFetch.call(this, url, ...args);
-  };
-  
-  const originalXHROpen = XMLHttpRequest.prototype.open;
-  XMLHttpRequest.prototype.open = function(method, url, ...args) {
-    if (shouldBlock(url)) {
-      this.send = () => {};
-      return;
-    }
-    return originalXHROpen.call(this, method, url, ...args);
-  };
-})();
-</script>
-<script>
 // Auto-generated path fix: redirect m.domain to static.domain for resources
 (function() {
   function fixPath(url) {
